@@ -13,11 +13,13 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# Créer un utilisateur non-root
-RUN useradd -ms /bin/bash wpuser
-
 # Changer les permissions de /var/www/html pour permettre l'accès à l'utilisateur non-root
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html
+
+# Changer le port d'écoute d'Apache à 8080 pour éviter les problèmes de permissions sur le port 80
+RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf \
+    && sed -i 's/:80/:8080/' /etc/apache2/sites-available/*.conf
 
 # Copier le script de démarrage personnalisé
 COPY ./entrypoint.sh /entrypoint.sh
@@ -25,9 +27,6 @@ RUN chmod +x /entrypoint.sh
 
 # Copier le configurateur PHP pour la page de préconfiguration
 COPY ./configurator.php /var/www/html/configurator.php
-
-# Utiliser l'utilisateur www-data (par défaut utilisé par Apache)
-USER www-data
 
 # Exposer le port 8080 pour le serveur web
 EXPOSE 8080
