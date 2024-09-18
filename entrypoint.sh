@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Donner les bonnes permissions à /var/www/html
+chown -R www-data:www-data /var/www/html
+
 # Vérifier si WordPress est téléchargé, sinon le télécharger
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Téléchargement de WordPress..."
