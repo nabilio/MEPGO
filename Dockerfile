@@ -1,6 +1,9 @@
 # Utilise l'image officielle WordPress avec PHP et Apache
 FROM wordpress:latest
 
+
+
+
 # Installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
     curl \
@@ -35,6 +38,9 @@ RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf \
 
 # Passer à l'utilisateur non-root
 USER wpuser
+
+# Changer les permissions de /var/www/html pour être accessibles à l'utilisateur non-root
+RUN chown -R www-data:www-data /var/www/html
 
 # Exposer le port 8080 pour le serveur web
 EXPOSE 8080
