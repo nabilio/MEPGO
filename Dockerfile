@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
     nano \
     && rm -rf /var/lib/apt/lists/*
 
+    # Ajouter une configuration pour le ServerName afin d'éviter l'erreur AH00558
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 # Installer WP-CLI pour configurer WordPress via ligne de commande
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
