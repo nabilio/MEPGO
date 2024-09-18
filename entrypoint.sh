@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Donner les bonnes permissions à /var/www/html
-chown -R www-data:www-data /var/www/html
-
 # Vérifier si WordPress est téléchargé, sinon le télécharger
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Téléchargement de WordPress..."
@@ -15,7 +12,7 @@ fi
 # Vérifier si WordPress est déjà configuré
 if ! wp core is-installed --path=/var/www/html --allow-root; then
     echo "Lancement de l'interface de préconfiguration..."
-    
+
     # Lancer Apache en arrière-plan pour permettre l'accès à l'interface de configuration
     apache2-foreground &
     
