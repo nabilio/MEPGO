@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# Vérifier si WordPress est installé, sinon le télécharger
+# Vérifier si WordPress est téléchargé, sinon le télécharger
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Téléchargement de WordPress..."
     wp core download --path=/var/www/html --allow-root
+
+    echo "Création du fichier wp-config.php..."
+    wp config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=localhost --path=/var/www/html --allow-root
 fi
 
 # Vérifier si WordPress est déjà configuré
@@ -29,7 +32,7 @@ if ! wp core is-installed --path=/var/www/html --allow-root; then
     WOOCOMMERCE=$(cat /var/www/html/woocommerce.txt)
 
     # Installer WordPress avec les informations de configuration
-    wp core install --url="http://localhost" --title="$SITENAME" --admin_user="$ADMINUSER" --admin_password="$ADMINPASS" --admin_email="$ADMINEMAIL" --path=/var/www/html --allow-root
+    wp core install --url="http://localhost:8080" --title="$SITENAME" --admin_user="$ADMINUSER" --admin_password="$ADMINPASS" --admin_email="$ADMINEMAIL" --path=/var/www/html --allow-root
 
     # Installer le thème sélectionné
     if [ ! -z "$THEMENAME" ]; then
