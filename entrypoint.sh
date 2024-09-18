@@ -9,16 +9,16 @@ if [ ! -f /var/www/html/wp-config.php ]; then
     wp core download --path=/var/www/html --allow-root
 
     echo "Création du fichier wp-config.php..."
-    wp config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=localhost --path=/var/www/html --allow-root
+    wp config create --dbname=wordpress --dbuser=root --dbpass=root --dbhost=db --path=/var/www/html --allow-root
 fi
 
 # Vérifier si WordPress est déjà configuré
 if ! wp core is-installed --path=/var/www/html --allow-root; then
     echo "Lancement de l'interface de préconfiguration..."
-
-    # Lancer le serveur Apache en arrière-plan pour permettre l'accès à l'interface de configuration
+    
+    # Lancer Apache en arrière-plan pour permettre l'accès à l'interface de configuration
     apache2-foreground &
-
+    
     # Attendre que l'utilisateur soumette le formulaire de préconfiguration
     while [ ! -f /var/www/html/wp-config.php ]; do
         sleep 5
@@ -34,10 +34,10 @@ if ! wp core is-installed --path=/var/www/html --allow-root; then
     THEMENAME=$(cat /var/www/html/themename.txt)
     WOOCOMMERCE=$(cat /var/www/html/woocommerce.txt)
 
-    # Installer WordPress avec les informations de configuration
+    # Installer WordPress
     wp core install --url="http://localhost:8080" --title="$SITENAME" --admin_user="$ADMINUSER" --admin_password="$ADMINPASS" --admin_email="$ADMINEMAIL" --path=/var/www/html --allow-root
 
-    # Installer le thème sélectionné
+    # Installer le thème choisi
     if [ ! -z "$THEMENAME" ]; then
         wp theme install $THEMENAME --activate --path=/var/www/html --allow-root
     fi
@@ -47,7 +47,7 @@ if ! wp core is-installed --path=/var/www/html --allow-root; then
         wp plugin install woocommerce --activate --path=/var/www/html --allow-root
     fi
 
-    echo "WordPress est installé avec succès."
+    echo "WordPress installé avec succès."
 else
     # Démarrer Apache normalement si WordPress est déjà installé
     apache2-foreground
